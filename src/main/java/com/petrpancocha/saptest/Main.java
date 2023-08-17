@@ -125,6 +125,8 @@ public class Main {
 
             System.out.println("The rest time is " +
                     (fullTravelTime > complaintTime ? 0 : complaintTime - fullTravelTime));
+
+            System.out.println();
         }
     }
 
