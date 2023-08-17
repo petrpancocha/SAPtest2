@@ -6,7 +6,6 @@ import java.util.List;
 public class Main {
 
     private static final int NUM_ZONES = 4;
-    private static final int NUM_COMPLAINTS = 2;
     private static final int[][] ROADS = {{1, 2, 5}, {2, 3, 10}, {3, 4, 20}, {1, 4, 1}};
     private static final int[][] COMPLAINTS = {{2, 65}, {3, 15}};
 
@@ -29,6 +28,13 @@ public class Main {
                 .orElse(null);
     }
 
+    private Zone getZoneByGraphMappingId(List<Zone> zones, int graphMappingId) {
+        return zones.stream()
+                .filter(z -> z.getGraphMappingId() == graphMappingId)
+                .findFirst()
+                .orElse(null);
+    }
+
     private Road getRoadByZones(List<Road> roads, int fromZoneId, int toZoneId) {
         return roads.stream()
                 .filter(r -> (r.getZoneA().getId() == fromZoneId && r.getZoneB().getId() == toZoneId)
@@ -40,11 +46,11 @@ public class Main {
     private List<Road> createRoads(List<Zone> zones) {
         List<Road> roads = new ArrayList<>();
 
-        for (int i = 0; i < ROADS.length; i++) {
+        for (int[] road : ROADS) {
             roads.add(new Road(
-                    getZoneById(zones, ROADS[i][0]),
-                    getZoneById(zones, ROADS[i][1]),
-                    ROADS[i][2]));
+                    getZoneById(zones, road[0]),
+                    getZoneById(zones, road[1]),
+                    road[2]));
         }
 
         return roads;
@@ -53,10 +59,10 @@ public class Main {
     private List<Complaint> createComplaints(List<Zone> zones) {
         List<Complaint> complaints = new ArrayList<>();
 
-        for (int i = 0; i < COMPLAINTS.length; i++) {
+        for (int[] complaint : COMPLAINTS) {
             complaints.add(new Complaint(
-                    getZoneById(zones, COMPLAINTS[i][0]),
-                    COMPLAINTS[i][1]));
+                    getZoneById(zones, complaint[0]),
+                    complaint[1]));
         }
 
         return complaints;
@@ -66,8 +72,8 @@ public class Main {
         Graph graph = new Graph(NUM_ZONES);
 
         for (Road road : roads) {
-            graph.addEdge(road.getZoneA().getId() - 1, road.getZoneB().getId() - 1);
-            graph.addEdge(road.getZoneB().getId() - 1, road.getZoneA().getId() - 1); // opposite direction
+            graph.addEdge(road.getZoneA().getGraphMappingId(), road.getZoneB().getGraphMappingId());
+            graph.addEdge(road.getZoneB().getGraphMappingId(), road.getZoneA().getGraphMappingId()); // opposite direction
         }
 
         return graph;
@@ -77,14 +83,14 @@ public class Main {
         List<Path> paths = new ArrayList<>();
 
         for (List<Integer> graphPath : graphPaths) {
-            Zone from = getZoneById(zones, graphPath.get(0) + 1);
-            Zone to = getZoneById(zones, graphPath.get(graphPath.size() - 1) + 1);
+            Zone from = getZoneByGraphMappingId(zones, graphPath.get(0));
+            Zone to = getZoneByGraphMappingId(zones, graphPath.get(graphPath.size() - 1));
 
             Path path = new Path(from, to);
 
             for (int i = 0; i < graphPath.size() - 1; i++) {
-                int idZoneA = graphPath.get(i) + 1;
-                int idZoneB = graphPath.get(i + 1) + 1;
+                int idZoneA = getZoneByGraphMappingId(zones, graphPath.get(i)).getId();
+                int idZoneB = getZoneByGraphMappingId(zones, graphPath.get(i + 1)).getId();
 
                 Road road = getRoadByZones(roads, idZoneA, idZoneB);
                 path.addRoad(road);
@@ -103,7 +109,7 @@ public class Main {
         Zone zoneHQ = getZoneById(zones, 1);
         for (Complaint complaint : complaints) {
             System.out.println("All paths from " + zoneHQ + " to " + complaint.getZone() + " to fix an issue");
-            List<List<Integer>> graphPaths = graph.findAllPaths(zoneHQ.getId() - 1, complaint.getZone().getId() - 1);
+            List<List<Integer>> graphPaths = graph.findAllPaths(zoneHQ.getGraphMappingId(), complaint.getZone().getGraphMappingId());
             List<Path> paths = convert2Paths(graphPaths, zones, roads);
 
             int minimumTravelTime = -1;
@@ -123,7 +129,7 @@ public class Main {
             int complaintTime = complaint.getTime();
             System.out.println("Time to fix a complaint is " + complaintTime);
 
-            System.out.println("The rest time is " +
+            System.out.println("Rest time is " +
                     (fullTravelTime > complaintTime ? 0 : complaintTime - fullTravelTime));
 
             System.out.println();

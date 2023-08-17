@@ -5,12 +5,19 @@ import java.util.Objects;
 public class Zone {
     private int id;
 
+    private int graphMappingId;
+
     public Zone(int id) {
         this.id = id;
+        this.graphMappingId = id - 1;
     }
 
     public int getId() {
         return id;
+    }
+
+    public int getGraphMappingId() {
+        return graphMappingId;
     }
 
     @Override
