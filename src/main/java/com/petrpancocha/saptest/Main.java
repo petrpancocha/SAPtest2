@@ -102,17 +102,29 @@ public class Main {
     private void process(Graph graph, List<Zone> zones, List<Road> roads, List<Complaint> complaints) {
         Zone zoneHQ = getZoneById(zones, 1);
         for (Complaint complaint : complaints) {
-            System.out.println("All paths from " + zoneHQ + " to " + complaint.getZone());
+            System.out.println("All paths from " + zoneHQ + " to " + complaint.getZone() + " to fix an issue");
             List<List<Integer>> graphPaths = graph.findAllPaths(zoneHQ.getId() - 1, complaint.getZone().getId() - 1);
             List<Path> paths = convert2Paths(graphPaths, zones, roads);
 
-            for (List<Integer> graphPath : graphPaths) {
-                System.out.println(graphPaths);
-            }
+            int minimumTravelTime = -1;
+            Path pathWithMinimumTravelTime = null;
 
             for (Path path : paths) {
                 System.out.println(path);
+                if (pathWithMinimumTravelTime == null || path.getTravelTime() < minimumTravelTime) {
+                    pathWithMinimumTravelTime = path;
+                    minimumTravelTime = path.getTravelTime();
+                }
             }
+
+            int fullTravelTime = 2 * minimumTravelTime;
+            System.out.println("Minimum travel time (to + back) is " + fullTravelTime);
+
+            int complaintTime = complaint.getTime();
+            System.out.println("Time to fix a complaint is " + complaintTime);
+
+            System.out.println("The rest time is " +
+                    (fullTravelTime > complaintTime ? 0 : complaintTime - fullTravelTime));
         }
     }
 
