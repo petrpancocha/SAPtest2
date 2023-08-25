@@ -72,7 +72,6 @@ public class Main {
 
         for (Road road : roads) {
             graph.addEdge(road.getZoneA().getGraphMappingId(), road.getZoneB().getGraphMappingId());
-            graph.addEdge(road.getZoneB().getGraphMappingId(), road.getZoneA().getGraphMappingId()); // opposite direction
         }
 
         return graph;

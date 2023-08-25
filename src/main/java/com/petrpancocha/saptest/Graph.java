@@ -33,6 +33,9 @@ public class Graph {
     public void addEdge(int u, int v) {
         // Add v to u's list.
         neighbours[u].add(v);
+
+        // Add u to v's list because graph is bidirectional
+        neighbours[v].add(u);
     }
 
     // Finds all paths from 's' to 'd'
