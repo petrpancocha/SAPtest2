@@ -31,6 +31,9 @@ public class Graph {
 
     // Adds edge from u to v
     public void addEdge(int u, int v) {
+        checkVertexIndex(u);
+        checkVertexIndex(v);
+
         // Add v to u's list.
         neighbours.get(u).add(v);
 
@@ -40,6 +43,9 @@ public class Graph {
 
     // Finds all paths from 's' to 'd'
     public List<List<Integer>> findAllPaths(int s, int d) {
+        checkVertexIndex(s);
+        checkVertexIndex(d);
+
         boolean[] isVisited = new boolean[v];
         ArrayList<Integer> pathList = new ArrayList<>();
 
@@ -51,6 +57,13 @@ public class Graph {
         findAllPathsRecursive(s, d, isVisited, pathList, resultPaths);
 
         return resultPaths;
+    }
+
+    private void checkVertexIndex(int vertex) {
+        if (vertex < 0 || vertex >= v) {
+            throw new IndexOutOfBoundsException(
+                    "Vertex index " + vertex + " is outside graph range [0, " + v + ")");
+        }
     }
 
     // A recursive function to find all paths from 'u' to 'd'.

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class GraphTest {
 
@@ -32,5 +33,21 @@ class GraphTest {
         Graph graph = new Graph(1);
 
         assertEquals(List.of(List.of(0)), graph.findAllPaths(0, 0));
+    }
+
+    @Test
+    void rejectsOutOfRangeVertexIndicesWhenSearching() {
+        Graph graph = new Graph(2);
+
+        assertThrows(IndexOutOfBoundsException.class, () -> graph.findAllPaths(-1, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> graph.findAllPaths(0, 2));
+    }
+
+    @Test
+    void validatesBothEdgeEndpointsBeforeChangingGraph() {
+        Graph graph = new Graph(2);
+
+        assertThrows(IndexOutOfBoundsException.class, () -> graph.addEdge(0, 2));
+        assertEquals(List.of(), graph.findAllPaths(0, 1));
     }
 }

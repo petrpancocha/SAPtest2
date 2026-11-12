@@ -13,6 +13,7 @@
 - `src/main/java/com/petrpancocha/saptest/`: application source.
 - `src/test/java/com/petrpancocha/saptest/`: JUnit 5 tests.
 - `pom.xml`: Maven project configuration, Java release 21, JUnit Jupiter, Surefire, and JaCoCo.
+- Maven's test source root is `src`, so `testCompile` compiles the main and test Java files together. Keep the tests physically under `src/test/java`; do not reset the Maven test source root without verifying a clean test build.
 - `.idea/` and `SAPtest2.iml`: IntelliJ IDEA project metadata; `.idea` and `*.iml` are ignored by Git.
 - `out/` is the IntelliJ/compiler output directory and `target/` is Maven output; both are ignored by Git.
 - No CI workflow, container definition, deployment manifest, or deployment procedure is present in the repository. Do not invent or claim one.
@@ -48,7 +49,7 @@ javac -Xlint:unchecked -d out $files
 java -cp out com.petrpancocha.saptest.Main
 ```
 
-Never report a build, test, or coverage check as successful unless its command completed successfully. At the time this file was written, `mvn clean verify` failed while compiling tests because Maven reported that application classes such as `Graph`, `Main`, and the model classes could not be found from test sources. Diagnose and fix that observed build issue before relying on Maven test or coverage results; do not lower or bypass the JaCoCo threshold to make the build pass.
+Never report a build, test, or coverage check as successful unless its command completed successfully. The test source root is configured as `src` because compiling main and test sources together avoids a test-compiler classpath failure in this project. Do not lower or bypass the JaCoCo threshold to make the build pass.
 
 ## Development workflow
 
