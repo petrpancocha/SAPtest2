@@ -10,7 +10,7 @@ public class Graph {
     private int v;
 
     // list of neighbours
-    private ArrayList<Integer>[] neighbours;
+    private List<List<Integer>> neighbours;
 
     public Graph(int vertices) {
 
@@ -22,20 +22,20 @@ public class Graph {
     }
 
     private void initNeighbours() {
-        neighbours = new ArrayList[v];
+        neighbours = new ArrayList<>(v);
 
         for (int i = 0; i < v; i++) {
-            neighbours[i] = new ArrayList<>();
+            neighbours.add(new ArrayList<>());
         }
     }
 
     // Adds edge from u to v
     public void addEdge(int u, int v) {
         // Add v to u's list.
-        neighbours[u].add(v);
+        neighbours.get(u).add(v);
 
         // Add u to v's list because graph is bidirectional
-        neighbours[v].add(u);
+        neighbours.get(v).add(u);
     }
 
     // Finds all paths from 's' to 'd'
@@ -71,7 +71,7 @@ public class Graph {
         isVisited[u] = true;
 
         // Recur for all the vertices that are neighbours of current vertex
-        for (Integer i : neighbours[u]) {
+        for (Integer i : neighbours.get(u)) {
             if (!isVisited[i]) {
                 // store current node in path[]
                 localPathList.add(i);
